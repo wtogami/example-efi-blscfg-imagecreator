@@ -8,7 +8,8 @@
 5. `git clone https://github.com/wtogami/example-efi-blscfg-imagecreator.git`
 6. `cd example-efi-blscfg-imagecreator`
 7. **IMPORTANT** Add your ssh pubkey to `include/debug-ssh-pubkeys.ksi` as this is your only way to login!
-7. Follow examples below
+8. **IMPORTANT** `dnf update` prior to image creation. Your `selinux-policy-targeted` must match the version to be installed in the image or creation will likely fail. For this reason this image creator is unable to install EL8 with selinux labeling.
+9. Follow examples below
 ```
 # ./createimage.sh 
 
