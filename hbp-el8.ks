@@ -9,8 +9,8 @@ repo --name="epel8"                    --baseurl=https://mirrors.kernel.org/fedo
 repo --name="epel8testing"             --baseurl=https://mirrors.kernel.org/fedora-epel/testing/8/Everything/aarch64/
 %include include/repo-example.ksi
 
-# SELinux configuration
-selinux --enforcing
+# SELinux configuration (can't label from Fedora 31, need matching selinux-policy-targeted at the time ...)
+selinux --disabled
 # System bootloader configuration (disabled due to vendor u-boot)
 bootloader --location=none --disabled
 
