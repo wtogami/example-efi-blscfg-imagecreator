@@ -1,0 +1,15 @@
+repo --name="example" --baseurl=https://fedorapeople.org/~wtogami/example-efi-blscfg-repo/aarch64/
+
+%post --erroronfail
+cat << EOF > /etc/yum.repos.d/example.repo
+[example]
+name=example
+baseurl=https://fedorapeople.org/~wtogami/example-efi-blscfg-repo/aarch64/
+enabled=1
+metadata_expire=1d
+repo_gpgcheck=0
+type=rpm
+EOF
+chmod 644 /etc/yum.repos.d/example.repo
+%end
+

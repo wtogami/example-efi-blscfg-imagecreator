@@ -1,0 +1,19 @@
+%packages
+# XXX: build and debug packages, exclude from production image
+vim-enhanced
+screen
+tmux
+file
+git
+rsync
+gdb
+strace
+ltrace
+gcc
+autoconf
+automake
+libtool
+libfaketime
+rpm-build
+rpmdevtools
+%end

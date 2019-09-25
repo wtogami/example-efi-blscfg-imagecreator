@@ -1,0 +1,111 @@
+#version=DEVEL
+# Keyboard layouts
+keyboard 'us'
+# Root password
+rootpw --iscrypted --lock locked
+# System language
+lang en_US.UTF-8
+# Shutdown after installation
+shutdown
+# System timezone
+timezone Etc/UTC
+# Use text mode install
+text
+# Network information
+network  --bootproto=dhcp --device=link --activate
+# System authorization information
+auth --useshadow --passalgo=sha512
+# Firewall configuration
+firewall --enabled --service=mdns
+
+# Run the Setup Agent on first boot
+firstboot --reconfig
+
+# System services
+services --enabled="sshd,NetworkManager,chronyd,zram-swap,haveged"
+
+# Clear the Master Boot Record
+zerombr
+# Partition clearing information
+clearpart --all --initlabel --disklabel=msdos
+
+%post --erroronfail
+
+# Print all packages installed within this disk image
+releasever=$(rpm --eval '%{fedora}')
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-$releasever-primary
+echo "Packages within this disk image"
+rpm -qa
+# Note that running rpm recreates the rpm db files which aren't needed or wanted
+rm -f /var/lib/rpm/__db*
+
+# remove random seed, the newly installed instance should make it's own
+rm -f /var/lib/systemd/random-seed
+
+# The enp1s0 interface is a left over from the imagefactory install, clean this up
+rm -f /etc/sysconfig/network-scripts/ifcfg-enp1s0
+
+dnf -y remove dracut-config-generic
+
+# Remove machine-id on pre generated images
+rm -f /etc/machine-id
+touch /etc/machine-id
+
+# setup systemd to boot to the right runlevel
+echo -n "Setting default runlevel to multiuser text mode"
+rm -f /etc/systemd/system/default.target
+ln -s /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+echo .
+
+# Set DNF to never implicitly install weak deps
+echo "Setting install_weak_deps=False in /etc/dnf/dnf.conf"
+echo "install_weak_deps=False" >> /etc/dnf/dnf.conf
+
+%end
+
+%packages
+# package list from fedora-kickstarts/fedora-disk-minimal.ks
+#@arm-tools
+   cloud-utils-growpart
+   zram
+
+@core
+
+#@hardware-support
+-NetworkManager-wifi
+chrony
+dracut-config-generic
+glibc-langpack-en
+-initial-setup
+-iw
+kernel
+rng-tools
+zram
+-@standard
+-dracut-config-rescue
+-generic-release*
+-glibc-all-langpacks
+-initial-setup-gui
+-iproute-tc
+-ipw*
+-iwl*
+-trousers
+-uboot-images-armv7
+-usb_modeswitch
+-xkeyboard-config
+-sssd-client
+-sssd-kcm
+-sssd-common
+
+# EFI distro boot
+grub2-efi-aa64
+
+# entropy generator
+haveged
+
+# system packages
+bind-utils
+net-tools
+i2c-tools
+
+%end
