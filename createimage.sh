@@ -2,7 +2,7 @@
 KSFILE=$1
 KSNAME=${KSFILE%.ks}
 
-if [ ! -f ${KSFILE} ]; then
+if [ ! -f "${KSFILE}" ]; then
   echo
   echo "SYNOPSIS"
   echo "   $0 <KICKSTARTFILE>"
