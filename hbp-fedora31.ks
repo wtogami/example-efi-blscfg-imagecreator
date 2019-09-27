@@ -118,13 +118,15 @@ chmod 755 /usr/bin/growlastpartition
 ### run-once@.service
 cat << EOF > '/etc/systemd/system/run-once@.service'
 [Unit]
-DefaultDependencies=yes
+DefaultDependencies=no
+After=local-fs.target systemd-machine-id-commit.service
+Before=sysinit.target shutdown.target
+Conflicts=shutdown.target
 
 [Service]
-Type=exec
+Type=oneshot
 ExecStart=-/usr/bin/%i
 ExecStartPost=-/usr/bin/systemctl disable run-once@%i.service
-Restart=no
 StandardOutput=journal+console
 StandardError=journal+console
 
